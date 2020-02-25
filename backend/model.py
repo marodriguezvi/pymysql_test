@@ -1,4 +1,5 @@
 import os
+import base64
 import dotenv
 import pymysql
 from uuid import uuid4
@@ -49,30 +50,18 @@ def connection():
     )
   except Exception as e:
     print(e)
+  
   return conn
-
-@decorator_conn
-def get_user_id(conn, user_id):
-  cursor = conn.cursor() 
-  sql = """SELECT * FROM USER WHERE id = '{}'""".format(user_id)
-  result = None
-
-  try:
-    cursor.execute(sql)
-    result = cursor.fetchone()
-  except Exception as e:
-    print(e)
-
-  return result
 
 @decorator_conn
 def get_user_email(conn, email):
   cursor = conn.cursor() 
-  sql = """SELECT * FROM USER WHERE correo = '{}'""".format(email)
+  sql = """SELECT * FROM USER WHERE correo = %s"""
+  data_tuple = (email,)
   result = None
 
   try:
-    cursor.execute(sql)
+    cursor.execute(sql, data_tuple)
     result = cursor.fetchone()
   except Exception as e:
     print(e)
@@ -84,13 +73,13 @@ def save_user(conn, user):
   cursor = conn.cursor()
   user_id = str(uuid4())
   sql = """INSERT INTO USER (id, nombre, correo, clave, fecha_nacimiento, 
-    genero) VALUES ('{}','{}', '{}', '{}', '{}', '{}')""".format(user_id, 
-    user.get('nombre'), user.get('correo'), user.get('clave'), 
-    user.get('fecha_nacimiento'), user.get('genero'))
+    genero) VALUES (%s,%s, %s, %s, %s, %s)"""
+  data_tuple = (user_id, user.get('nombre'), user.get('correo'), 
+    user.get('clave'), user.get('fecha_nacimiento'), user.get('genero'))
   result = None
 
   try:
-    cursor.execute(sql)
+    cursor.execute(sql, data_tuple)
     conn.commit()
     result = user_id
   except Exception as e:
@@ -101,13 +90,18 @@ def save_user(conn, user):
 @decorator_conn
 def get_tasks(conn, user_id):
   cursor = conn.cursor()
-  sql = """SELECT * FROM TAREA WHERE user_id = '{}'""".format(user_id)
+  sql = """SELECT * FROM TAREA WHERE user_id = %s"""
+  data_tuple = (user_id,)
   result = []
 
   try:
-    cursor.execute(sql)
+    cursor.execute(sql, data_tuple)
     for item in cursor.fetchall():
-      result.append(list(item))
+      item = list(item)
+      base64_encoded_data = base64.b64encode(item[5])
+      item[5] = 'data:'+item[7]+';base64,'+ base64_encoded_data.decode('utf-8')
+      result.append(item)
+      
   except Exception as e:
     print(e)
   
@@ -118,15 +112,17 @@ def save_task(conn, task):
   cursor = conn.cursor()
   task_id = str(uuid4())
   sql = """INSERT INTO TAREA (id, user_id, nombre, descripcion, 
-    fecha_creacion, nombre_imagen) 
-    VALUES ('{}', '{}', '{}', '{}', '{}', '{}')
-    """.format(task_id, task.get('user_id'), task.get('nombre'), 
+    fecha_creacion, contenido_imagen, nombre_imagen, formato_imagen) 
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    """
+  data_tuple = (task_id, task.get('user_id'), task.get('nombre'), 
     task.get('descripcion'), task.get('fecha_creacion'), 
-    task.get('nombre_imagen'))
+    task.get('contenido_imagen'), task.get('nombre_imagen'), 
+    task.get('formato_imagen'))
   result = None
 
   try:
-    cursor.execute(sql)
+    cursor.execute(sql, data_tuple)
     conn.commit()
     result = task_id
   except Exception as e:
@@ -137,13 +133,16 @@ def save_task(conn, task):
 @decorator_conn
 def update_task(conn, task):
   cursor = conn.cursor()
-  sql = """UPDATE TAREA SET nombre = '{}', descripcion = '{}', 
-    nombre_imagen = '{}' WHERE TAREA.id = '{}'""".format(task.get('nombre'), 
-    task.get('descripcion'), task.get('nombre_imagen'), task.get('id'))
+  sql = """UPDATE TAREA SET nombre = %s, descripcion = %s, 
+    contenido_imagen = %s, nombre_imagen = %s, formato_imagen = %s 
+    WHERE TAREA.id = %s"""
+  data_tuple = (task.get('nombre'), task.get('descripcion'), 
+    task.get('contenido_imagen'), task.get('nombre_imagen'), 
+    task.get('formato_imagen'), task.get('id'))
   result = None
 
   try:
-    cursor.execute(sql)
+    cursor.execute(sql, data_tuple)
     conn.commit()
     result = cursor.rowcount
   except Exception as e:
@@ -154,55 +153,15 @@ def update_task(conn, task):
 @decorator_conn
 def delete_task(conn, task_id):
   cursor = conn.cursor()
-  sql = """DELETE FROM TAREA WHERE id = '{}'""".format(task_id)
+  sql = """DELETE FROM TAREA WHERE id = %s"""
+  data_tuple = (task_id,)
   result = None
 
   try:
-    cursor.execute(sql)
+    cursor.execute(sql, data_tuple)
     conn.commit()
     result = cursor.rowcount
   except Exception as e:
     print(e)
   
   return result
-
-if __name__ == "__main__":
-  """ _id = save_task({
-    'user_id': 'a30f7847-668e-44b3-9e2b-416934866623',
-    'nombre': 'trabajo',
-    'descripcion': 'hacer el trabajo de matemáticas',
-    'fecha_creacion': '2020-02-21',
-    'imagen': 'jalsdfj'
-  })
-  print(_id) """
-  """ 
-  print(get_tasks('a30f7847-668e-44b3-9e2b-416934866623'))
-  print()
-  print(update_task({
-    'id': 'dd40a414-7eea-4011-9d9c-7aac86e91a2b',
-    'nombre': 'trabajo de grado',
-    'descripcion': 'hacer el trabajo ',
-    'fecha_creacion': '2020-02-20',
-    'imagen': 'jalsdfjppp'
-  }))
-  print() """
-  
-  #print(delete_task('1ce279a0-5685-4e13-b982-e43486c49a2c'))
-  
-  print(get_user_email('daniel@gmail.co'))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
