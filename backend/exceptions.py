@@ -1,0 +1,2 @@
+class CorreoDuplicadoError(Exception):
+  pass
