@@ -131,7 +131,7 @@ def save_task(conn, task):
   return result
 
 @decorator_conn
-def update_task(conn, task):
+def update_entire_task(conn, task):
   cursor = conn.cursor()
   sql = """UPDATE TAREA SET nombre = %s, descripcion = %s, 
     contenido_imagen = %s, nombre_imagen = %s, formato_imagen = %s 
@@ -139,6 +139,23 @@ def update_task(conn, task):
   data_tuple = (task.get('nombre'), task.get('descripcion'), 
     task.get('contenido_imagen'), task.get('nombre_imagen'), 
     task.get('formato_imagen'), task.get('id'))
+  result = None
+
+  try:
+    cursor.execute(sql, data_tuple)
+    conn.commit()
+    result = cursor.rowcount
+  except Exception as e:
+    print(e)
+  
+  return result
+
+@decorator_conn
+def update_task_partially(conn, task):
+  cursor = conn.cursor()
+  sql = """UPDATE TAREA SET nombre = %s, descripcion = %s 
+    WHERE TAREA.id = %s"""
+  data_tuple = (task.get('nombre'), task.get('descripcion'), task.get('id'))
   result = None
 
   try:
