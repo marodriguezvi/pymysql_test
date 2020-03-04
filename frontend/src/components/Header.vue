@@ -3,26 +3,37 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
         <router-link to="/" class="navbar-brand">TEST</router-link>
-        <button class="navbar-toggler" type="button" data-toggle="collapse"   data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"  aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
-            <router-link v-if="auth" to="/dashboard" tag="li" class="nav-item"><a class="nav-link">Tablero</a></router-link>
+            <router-link v-if="auth" to="/tareas" tag="li"
+              class="nav-item"><a class="nav-link">Tareas</a></router-link>
           </ul>
           <ul v-if="!auth" class="navbar-nav ml-auto">
-            <router-link to="/auth/login" tag="li" class="nav-item"><a class="nav-link">Inicia sesión</a></router-link>
-            <router-link to="/auth/sign-up" tag="li" class="nav-item"><a class="nav-link">Regístrate</a></router-link>
+            <router-link to="/login" tag="li"
+              class="nav-item">
+              <a class="nav-link">Inicia sesión</a></router-link>
+            <router-link to="/sign-up" tag="li"
+              class="nav-item"><a class="nav-link">Regístrate</a></router-link>
           </ul>
           <ul v-if="auth" class="navbar-nav ml-auto">
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false" @click="showDropDown = !showDropDown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                role="button" data-toggle="dropdown" aria-haspopup="false"
+                aria-expanded="false" @click="showDropDown = !showDropDown">
                 {{ name }}
               </a>
-              <ul v-if="showDropDown" class="dropdown-menu" :class="{show: showDropDown}" style="width: 194px">
+              <ul v-if="showDropDown" class="dropdown-menu"
+                :class="{show: showDropDown}" style="width: 194px">
                 <div>
-                  <li class="dropdown-item" @click="logout" style="cursor: pointer">Cerrar sesión</li>
+                  <li class="dropdown-item" @click="logout"
+                    style="cursor: pointer">Cerrar sesión</li>
                 </div>
               </ul>
             </li>

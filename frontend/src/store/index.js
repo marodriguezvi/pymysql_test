@@ -34,7 +34,7 @@ export default new Vuex.Store({
   },
   actions: {
     signup ({ commit }, authData) {
-      Vue.http.post('http://localhost:8000/auth/sign-up', authData)
+      Vue.http.post('http://localhost:8000/sign-up', authData)
         .then(response => {
           const data = response.body
           console.log(data)
@@ -51,7 +51,7 @@ export default new Vuex.Store({
         })
     },
     login ({ commit }, authData) {
-      Vue.http.post('http://localhost:8000/auth/login', authData)
+      Vue.http.post('http://localhost:8000/login', authData)
         .then(response => {
           const data = response.body
           console.log(data)
@@ -86,17 +86,66 @@ export default new Vuex.Store({
       }
     },
     getTasks ({ commit, state }) {
-      Vue.http.get('http://localhost:8000/user/tasks', {
+      Vue.http.get('http://localhost:8000/tasks', {
         headers: {
           'Authorization': 'Bearer ' + state.token
         }
-      })
-        .then(response => {
+      }).then(response => {
           console.log(response.body.tasks)
           commit('setTasks', response.body.tasks)
         }, error => {
           console.log(error)
         })
+    },
+    saveTask ({dispatch, state}, userData) {
+      Vue.http.post('http://localhost:8000/tasks', userData, {
+        headers: {
+          'Authorization': 'Bearer ' + state.token
+        }
+      }).then(response => {
+        console.log(response.body)
+        dispatch('getTasks')
+      }, error => {
+        console.log(error)
+      })
+    },
+    updateEntireTask ({dispatch, state}, userData) {
+      Vue.http.put('http://localhost:8000/tasks/' + userData.get('id'), 
+      userData, {
+        headers: {
+          'Authorization': 'Bearer ' + state.token
+        }
+      }).then(response => {
+        console.log(response.body)
+        dispatch('getTasks')
+      }, error => {
+        console.log(error)
+      })
+    },
+    updateTaskPartially ({dispatch, state}, userData) {
+      Vue.http.patch('http://localhost:8000/tasks/' + userData.get('id'), 
+      userData, {
+        headers: {
+          'Authorization': 'Bearer ' + state.token
+        }
+      }).then(response => {
+        console.log(response.body)
+        dispatch('getTasks')
+      }, error => {
+        console.log(error)
+      })
+    },
+    deleteTask ({dispatch, state}, userData) {
+      Vue.http.delete('http://localhost:8000/tasks/' + userData.id, {
+        headers: {
+          'Authorization': 'Bearer ' + state.token
+        }
+      }).then(response => {
+        console.log(response.body)
+        dispatch('getTasks')
+      }, error => {
+        console.log(error)
+      })
     },
     clearError ({ commit }) {
       commit('clearError')

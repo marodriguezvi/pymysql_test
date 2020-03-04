@@ -7,20 +7,25 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Home',
     component: Home
   },
   {
-    path: '/auth/sign-up',
+    path: '/sign-up',
     component: () => import('../views/Signup.vue')
   },
   {
-    path: '/auth/login',
+    path: '/login',
     component: () => import('../views/Login.vue')
   },
   {
-    path: '/dashboard',
-    component: () => import('../views/Dashboard.vue')
+    path: '/tareas',
+    component: () => import('../views/Tareas.vue')
+  },
+  {
+    path: '/image',
+    name: 'image',
+    component: () => import('../views/Image.vue'),
+    props: true
   }
 ]
 
