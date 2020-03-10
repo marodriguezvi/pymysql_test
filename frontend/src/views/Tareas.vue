@@ -33,6 +33,7 @@
           <label for="image">Imagen</label>
           <input
             id="image"
+            ref="inputfile"
             type="file"
             accept="image/*"
             @change="readFile"
@@ -51,8 +52,8 @@
             @click="clearForm">Cancelar</button>
         </div>
       </div>
-      <div class="col-md-8 mt-4">
-        <table class="table table-borderless">
+      <div class="col-md-8 mt-4 table-wrapper-scroll-y my-custom-scrollbar">
+        <table class="table table-borderless table-bordered mb-0">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -157,11 +158,12 @@ export default {
     },
     clearForm () {
       this.name = ''
-      this.description = ''
       this.image = null
-      this.imageError = false
+      this.description = ''
       this.currentItem = []
+      this.imageError = false
       this.$v.$reset()
+      this.$refs.inputfile.value = ''
     },
     sendTask () {
       if (this.image) {
@@ -199,3 +201,13 @@ export default {
   }
 }
 </script>
+<style>
+.my-custom-scrollbar {
+  position: relative;
+  height: 402px;
+  overflow: auto;
+}
+.table-wrapper-scroll-y {
+  display: block;
+}
+</style>
