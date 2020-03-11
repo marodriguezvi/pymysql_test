@@ -1,9 +1,7 @@
 import os
 import jwt
-import model
-import shutil
 import datetime
-import exceptions as exc
+import sql_model
 from sanic_cors import CORS
 from sanic import Sanic, response
 from sanic.views import HTTPMethodView
@@ -20,7 +18,7 @@ async def sign_up(request):
     return response.json({'auth': False, 'message': 'Datos requeridos'}, 
       status=404)
   
-  user_id = model.save_user(data)
+  user_id = sql_model.save_user(data)
   if not user_id:
     return response.json({'auth': False, 
       'message': 'Correo electrónico registrado'}, status=404)
@@ -38,7 +36,7 @@ async def login(request):
     return response.json({'auth': False, 'message': 'Datos requeridos'}, 
       status=404)
 
-  user = model.get_user_email(data.get('correo'))
+  user = sql_model.get_user_email(data.get('correo'))
   if not user:
     return response.json({'auth': False, 'message': 'Usuario no encontrado'}, 
       status=401)
@@ -73,7 +71,7 @@ class CRTaskResource(HTTPMethodView):
     if not decoded:
       return resp
     
-    tasks = model.get_tasks(decoded.get('id'))
+    tasks = sql_model.get_tasks(decoded.get('id'))
     return response.json({'auth': True, 'tasks': tasks}, status=200)
 
 
@@ -97,7 +95,7 @@ class CRTaskResource(HTTPMethodView):
       'descripcion': form_data.get('descripcion'),
       'fecha_creacion': datetime.datetime.now().isoformat(timespec='minutes')
     }
-    task_id = model.save_task(data)
+    task_id = sql_model.save_task(data)
     return response.json({'auth': True, 'create': task_id}, status=201)
 
   async def options(self, request):
@@ -123,7 +121,7 @@ class UDTaskResource(HTTPMethodView):
       'formato_imagen': img_file.type,
       'contenido_imagen': img_file.body
     }
-    result = model.update_entire_task(data)
+    result = sql_model.update_entire_task(data)
     return response.json({'auth': True, 'updated': result}, status=200)
     
   async def patch(self, request, _id):
@@ -141,7 +139,7 @@ class UDTaskResource(HTTPMethodView):
       'nombre': form_data.get('nombre'),
       'descripcion': form_data.get('descripcion')
     }
-    result = model.update_task_partially(data)
+    result = sql_model.update_task_partially(data)
     return response.json({'auth': True, 'updated': result}, status=200)
 
   async def delete(self, request, _id):
@@ -149,7 +147,7 @@ class UDTaskResource(HTTPMethodView):
     if not decoded:
       return resp
     
-    result = model.delete_task(_id)
+    result = sql_model.delete_task(_id)
     return response.json({'auth': True, 'delete': result}, status=200)
 
   async def options(self, request, _id):

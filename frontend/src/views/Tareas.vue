@@ -43,9 +43,9 @@
         <div class="form-group">
           <button
             v-if="currentItem.length == 0"
-            class="btn btn-success mb-4"
+            class="btn btn-success"
             @click="sendTask">Crear</button>
-          <button v-else class="btn btn-success mb-4"
+          <button v-else class="btn btn-success"
             @click="updateTask">Actualizar</button>
           <button
             class="btn btn-secondary float-right"
