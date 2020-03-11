@@ -51,6 +51,15 @@
             class="btn btn-secondary float-right"
             @click="clearForm">Cancelar</button>
         </div>
+        <hr>
+        <div class="form-group">
+          <download-csv
+            class = "btn btn-success"
+            :data = "tasksData"
+            name = "tasks.csv">
+            Exportar tareas
+          </download-csv>
+        </div>
       </div>
       <div class="col-md-8 mt-4 table-wrapper-scroll-y my-custom-scrollbar">
         <table class="table table-borderless table-bordered mb-0">
@@ -142,6 +151,15 @@ export default {
   computed: {
     tasks () {
       return this.$store.getters.getTasks
+    },
+    tasksData () {
+      let tasks = this.$store.getters.getTasks
+      let data = []
+      data.push(['nombre', 'descripcion', 'fecha de creacion', 'imagen'])
+      for (let i of tasks) {
+        data.push([i[2], i[3], i[4], i[6]])
+      }
+      return data
     }
   },
   methods: {

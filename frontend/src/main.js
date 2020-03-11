@@ -4,10 +4,12 @@ import router from './router'
 import VueResource from 'vue-resource'
 import store from './store'
 import Vuelidate from 'vuelidate'
+import JsonCSV from 'vue-json-csv'
 import './registerServiceWorker'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min.js'
 
+Vue.component('downloadCsv', JsonCSV)
 Vue.config.productionTip = false
 Vue.use(VueResource)
 Vue.use(Vuelidate)

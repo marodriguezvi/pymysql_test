@@ -37,7 +37,7 @@ export default new Vuex.Store({
       Vue.http.post('http://localhost:8000/sign-up', authData)
         .then(response => {
           const data = response.body
-          console.log(data)
+          // console.log(data)
           commit('authUser', {
             token: data.token,
             name: data.name
@@ -47,14 +47,14 @@ export default new Vuex.Store({
           router.push('/')
         }, error => {
           commit('authError', error.body)
-          console.log(error.body)
+          // console.log(error.body)
         })
     },
     login ({ commit }, authData) {
       Vue.http.post('http://localhost:8000/login', authData)
         .then(response => {
           const data = response.body
-          console.log(data)
+          // console.log(data)
           commit('authUser', {
             token: data.token,
             name: data.name
@@ -63,7 +63,7 @@ export default new Vuex.Store({
           localStorage.setItem('name', data.name)
           router.push('/')
         }, error => {
-          console.log(error.body)
+          // console.log(error.body)
           commit('authError', error.body)
         })
     },
@@ -91,10 +91,10 @@ export default new Vuex.Store({
           'Authorization': 'Bearer ' + state.token
         }
       }).then(response => {
-          console.log(response.body.tasks)
+          // console.log(response.body.tasks)
           commit('setTasks', response.body.tasks)
         }, error => {
-          console.log(error)
+          // console.log(error)
         })
     },
     saveTask ({dispatch, state}, userData) {
@@ -103,10 +103,10 @@ export default new Vuex.Store({
           'Authorization': 'Bearer ' + state.token
         }
       }).then(response => {
-        console.log(response.body)
+        // console.log(response.body)
         dispatch('getTasks')
       }, error => {
-        console.log(error)
+        // console.log(error)
       })
     },
     updateEntireTask ({dispatch, state}, userData) {
@@ -116,10 +116,10 @@ export default new Vuex.Store({
           'Authorization': 'Bearer ' + state.token
         }
       }).then(response => {
-        console.log(response.body)
+        // console.log(response.body)
         dispatch('getTasks')
       }, error => {
-        console.log(error)
+        // console.log(error)
       })
     },
     updateTaskPartially ({dispatch, state}, userData) {
@@ -129,10 +129,10 @@ export default new Vuex.Store({
           'Authorization': 'Bearer ' + state.token
         }
       }).then(response => {
-        console.log(response.body)
+        // console.log(response.body)
         dispatch('getTasks')
       }, error => {
-        console.log(error)
+        // console.log(error)
       })
     },
     deleteTask ({dispatch, state}, userData) {
@@ -141,10 +141,10 @@ export default new Vuex.Store({
           'Authorization': 'Bearer ' + state.token
         }
       }).then(response => {
-        console.log(response.body)
+        // console.log(response.body)
         dispatch('getTasks')
       }, error => {
-        console.log(error)
+        // console.log(error)
       })
     },
     clearError ({ commit }) {
