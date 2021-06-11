@@ -20,4 +20,4 @@ Sanic-Plugins-Framework==0.9.1
 sniffio==1.1.0
 ujson==1.35
 uvloop==0.14.0
-websockets==8.1
+websockets==9.1
